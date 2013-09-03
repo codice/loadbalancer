@@ -25,8 +25,6 @@ import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 /*********************************************
  * Dynamically builds the Camel route for the HTTP and HTTPs Load Balancer.
  * 
- * @author ddf.isgs@lmco.com
- * 
  */
 public class LoadBalancerDynamicRouteBuilder extends RouteBuilder {
 	private String[] serverUris;

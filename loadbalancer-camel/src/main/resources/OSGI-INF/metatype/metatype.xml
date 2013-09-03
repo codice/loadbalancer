@@ -15,7 +15,7 @@
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0">
 
-	<OCD name="Platform HTTP Load Balancer" id="ddf.cloud.loadbalancer.HttpLoadBalancer">
+	<OCD name="Platform HTTP Load Balancer" id="org.codice.loadbalancer.camel.HttpLoadBalancer">
 	  
 	  <AD name="Load Balancer Port" id="loadPort" required="true" default="8080"
       type="String" description="The port number of the load balancer"/>
@@ -25,13 +25,12 @@
       description="Comma delimited list of IP address and port in format: [IP_Address]:[Port] (e.g. 127.0.0.1:8181,192.168.1.1:8181)"/>  	
 	</OCD>
 
-	<Designate pid="ddf.cloud.loadbalancer.HttpLoadBalancer" 
-	           factoryPid="ddf.cloud.loadbalancer.HttpLoadBalancer">
-		<Object ocdref="ddf.cloud.loadbalancer.HttpLoadBalancer" />
+	<Designate pid="org.codice.loadbalancer.camel.HttpLoadBalancer">
+		<Object ocdref="org.codice.loadbalancer.camel.HttpLoadBalancer" />
 	</Designate>
 	
 	
-	<OCD name="Platform HTTPS Load Balancer" id="ddf.cloud.loadbalancer.HttpsLoadBalancer">
+	<OCD name="Platform HTTPS Load Balancer" id="org.codice.loadbalancer.camel.HttpsLoadBalancer">
 	  
 	 <AD name="Load Balancer Host" id="loadHost" required="true" default="localhost"
       type="String" description="The hostname or IP address of the load balancer"/>
@@ -45,9 +44,8 @@
 	  		
 	</OCD>
 
-	<Designate pid="ddf.cloud.loadbalancer.HttpsLoadBalancer" 
-	           factoryPid="ddf.cloud.loadbalancer.HttpsLoadBalancer">
-		<Object ocdref="ddf.cloud.loadbalancer.HttpsLoadBalancer" />
+	<Designate pid="org.codice.loadbalancer.camel.HttpsLoadBalancer">
+		<Object ocdref="org.codice.loadbalancer.camel.HttpsLoadBalancer" />
 	</Designate>
 
 </metatype:MetaData>

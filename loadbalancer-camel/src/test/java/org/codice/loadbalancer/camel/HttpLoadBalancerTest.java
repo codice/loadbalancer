@@ -30,8 +30,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Tests the HTTP Load Balancer.
- * 
- * @author ddf.isgs@lmco.com
  */
 public class HttpLoadBalancerTest extends CamelTestSupport {
 	private static final transient Logger LOGGER = LoggerFactory
