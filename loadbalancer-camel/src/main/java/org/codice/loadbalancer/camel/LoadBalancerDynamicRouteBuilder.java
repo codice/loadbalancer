@@ -20,6 +20,7 @@ import org.apache.camel.component.jetty.JettyHttpComponent;
 import org.apache.camel.util.jsse.KeyManagersParameters;
 import org.apache.camel.util.jsse.KeyStoreParameters;
 import org.apache.camel.util.jsse.SSLContextParameters;
+import org.eclipse.jetty.http.ssl.SslContextFactory;
 import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
 
 /*********************************************
@@ -110,7 +111,7 @@ public class LoadBalancerDynamicRouteBuilder extends RouteBuilder {
 
 		// Create Camel Route
 		from(jettyFromUri).loadBalance()
-				.failover(MAX_FAIL_ATTEMPTS, false, true,java.net.ConnectException.class).to(uriList);
+				.failover(uriList.length, false, true, java.net.ConnectException.class).to(uriList);
 
 	}
 
@@ -137,9 +138,9 @@ public class LoadBalancerDynamicRouteBuilder extends RouteBuilder {
 
 		// From Camel 2.5.0 Camel-Jetty is using SslSelectChannelConnector
 		// instead of SslSocketConnector
+        SslContextFactory sslContextFactory = new SslContextFactory();
+		sslContextFactory.setSslContext(sslContextParameters.createSSLContext());
 		SslSelectChannelConnector sslSocketConnector = new SslSelectChannelConnector();
-		sslSocketConnector.getSslContextFactory().setSslContext(
-				sslContextParameters.createSSLContext());
 
 		return sslSocketConnector;
 	}

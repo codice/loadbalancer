@@ -29,6 +29,9 @@
     <!-- Karaf-defined Properties -->
     <karaf.version>2.3.2</karaf.version>
     <camel.version>2.11.0</camel.version>
+    
+    <!-- Older version of jetty due to null pointer bug -->
+    <jetty.version>7.5.4.v20111024</jetty.version>
   </properties>
 
   <dependencyManagement>
