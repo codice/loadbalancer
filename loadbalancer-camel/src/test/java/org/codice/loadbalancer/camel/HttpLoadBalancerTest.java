@@ -13,6 +13,7 @@ package org.codice.loadbalancer.camel;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 
 import java.util.List;
 
@@ -27,194 +28,192 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Tests the HTTP Load Balancer.
  */
 public class HttpLoadBalancerTest extends CamelTestSupport {
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(HttpLoadBalancerTest.class);
+    private static final transient Logger LOGGER = LoggerFactory
+            .getLogger(HttpLoadBalancerTest.class);
 
-	private CamelContext camelContext;
-	private HttpLoadBalancer httpLoadBalancer;
+    private CamelContext camelContext;
 
-	@After
-	public void tearDown() {
-		LOGGER.debug("INSIDE tearDown");
-		context = null;
-		camelContext = null;
-	}
+    private HttpLoadBalancer httpLoadBalancer;
 
-	@Test
-	/**
-	 * Tests route creation with a given load balancer port and server URI
-	 * 
-	 * @throws Exception
-	 */
-	public void testRouteCreationWithPortAndServerURI() throws Exception {
-		String loadPort = "8080";
-		String serverUris = "localhost:8181";
+    @After
+    public void tearDown() {
+        LOGGER.debug("INSIDE tearDown");
+        context = null;
+        camelContext = null;
+    }
 
-		RouteDefinition routeDefinition = createRoute(loadPort, serverUris);
+    @Test
+    /**
+     * Tests route creation with a given load balancer port and server URI
+     * 
+     * @throws Exception
+     */
+    public void testRouteCreationWithPortAndServerURI() throws Exception {
+        String loadPort = "8080";
+        String serverUris = "localhost:8181";
+        camelContext = super.createCamelContext();
 
-		verifyRoute(routeDefinition, loadPort, serverUris);
+        RouteDefinition routeDefinition = createRoute(loadPort, serverUris);
 
-		camelContext.removeRouteDefinition(routeDefinition);
-	}
+        verifyRoute(routeDefinition, loadPort, serverUris);
 
-	@Test
-	/**
-	 * Tests route creation with a given load balancer port and a null server URI
-	 * 
-	 * @throws Exception
-	 */
-	public void testRouteCreationWithNullServerURI() throws Exception {
-		String loadPort = "8080";
-		String serverUris = null;
-		 camelContext = super.createCamelContext();
-		 
-			HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+        camelContext.removeRouteDefinition(routeDefinition);
+    }
 
-			httpLb.setLoadPort(loadPort);
-			httpLb.setServerUris(serverUris);
+    @Test
+    /**
+     * Tests route creation with a given load balancer port and a null server URI
+     * 
+     * @throws Exception
+     */
+    public void testRouteCreationWithNullServerURI() throws Exception {
+        String loadPort = "8080";
+        String serverUris = null;
+        camelContext = super.createCamelContext();
 
-			// Simulates what container would do once all setters have been invoked
-			httpLb.init();
-			
-			assertThat(camelContext.getRouteDefinitions().size(), is(0));
-	}
-	
-	@Test
-	/**
-	 * Tests route creation with a given load balancer port and an empty server URI
-	 * 
-	 * @throws Exception
-	 */
-	public void testRouteCreationWithEmptyServerURI() throws Exception {
-		String loadPort = "8080";
-		String serverUris = "";
-		 camelContext = super.createCamelContext();
-		 
-			HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+        HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
 
-			httpLb.setLoadPort(loadPort);
-			httpLb.setServerUris(serverUris);
+        httpLb.setLoadPort(loadPort);
+        httpLb.setServerUris(serverUris);
 
-			// Simulates what container would do once all setters have been invoked
-			httpLb.init();
-			
-			assertThat(camelContext.getRouteDefinitions().size(), is(0));
-	}
-	
-	@Test
-	/**
-	 * Tests route creation with an empty load balancer port and a given server URI
-	 * 
-	 * @throws Exception
-	 */
-	public void testRouteCreationWithEmptyPort() throws Exception {
-		String loadPort = "";
-		String serverUris = "localhost:8181";
-		 camelContext = super.createCamelContext();
-		 
-			HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+        // Simulates what container would do once all setters have been invoked
+        httpLb.init();
 
-			httpLb.setLoadPort(loadPort);
-			httpLb.setServerUris(serverUris);
+        assertThat(camelContext.getRouteDefinitions().size(), is(0));
+    }
 
-			// Simulates what container would do once all setters have been invoked
-			httpLb.init();
-			
-			assertThat(camelContext.getRouteDefinitions().size(), is(0));
-	}
-	
-	@Test
-	/**
-	 * Tests route creation with a null load balancer port and a given server URI
-	 * 
-	 * @throws Exception
-	 */
-	public void testRouteCreationWithNullPort() throws Exception {
-		String loadPort = null;
-		String serverUris = "localhost:8181";
-		 camelContext = super.createCamelContext();
-		 
-			HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+    @Test
+    /**
+     * Tests route creation with a given load balancer port and an empty server URI
+     * 
+     * @throws Exception
+     */
+    public void testRouteCreationWithEmptyServerURI() throws Exception {
+        String loadPort = "8080";
+        String serverUris = "";
+        camelContext = super.createCamelContext();
 
-			httpLb.setLoadPort(loadPort);
-			httpLb.setServerUris(serverUris);
+        HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
 
-			// Simulates what container would do once all setters have been invoked
-			httpLb.init();
-			
-			assertThat(camelContext.getRouteDefinitions().size(), is(0));
-	}
-	
-	@Test
-	/**
-	 * Tests route creation with multiple server URIs
-	 * 
-	 * @throws Exception
-	 */
-	public void testRouteCreationWithMultipleServerURIs() throws Exception {
-		String loadPort = "8080";
-		String serverUris = "localhost:8181,127.0.0.1:8181";
-		 camelContext = super.createCamelContext();
-		 
-			HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+        httpLb.setLoadPort(loadPort);
+        httpLb.setServerUris(serverUris);
 
-			httpLb.setLoadPort(loadPort);
-			httpLb.setServerUris(serverUris);
+        // Simulates what container would do once all setters have been invoked
+        httpLb.init();
 
-			// Simulates what container would do once all setters have been invoked
-			httpLb.init();
-			
-			assertThat(camelContext.getRouteDefinitions().size(), is(1));
-	}
-	
-	private RouteDefinition createRoute(String loadPort, String serverUris)
-			throws Exception {
-		camelContext = super.createCamelContext();
+        assertThat(camelContext.getRouteDefinitions().size(), is(0));
+    }
 
-		HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+    @Test
+    /**
+     * Tests route creation with an empty load balancer port and a given server URI
+     * 
+     * @throws Exception
+     */
+    public void testRouteCreationWithEmptyPort() throws Exception {
+        String loadPort = "";
+        String serverUris = "localhost:8181";
+        camelContext = super.createCamelContext();
 
-		httpLb.setLoadPort(loadPort);
-		httpLb.setServerUris(serverUris);
+        HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
 
-		// Simulates what container would do once all setters have been invoked
-		httpLb.init();
+        httpLb.setLoadPort(loadPort);
+        httpLb.setServerUris(serverUris);
 
-		// Initial Camel route should now be created
-		List<RouteDefinition> routeDefinitions = httpLb.getRouteDefinitions();
+        // Simulates what container would do once all setters have been invoked
+        httpLb.init();
 
-		assertThat(routeDefinitions.size(), is(1));
-		LOGGER.debug("routeDefinition = " + routeDefinitions.get(0).toString());
+        assertThat(camelContext.getRouteDefinitions().size(), is(0));
+    }
 
-		return routeDefinitions.get(0);
-	}
+    @Test
+    /**
+     * Tests route creation with a null load balancer port and a given server URI
+     * 
+     * @throws Exception
+     */
+    public void testRouteCreationWithNullPort() throws Exception {
+        String loadPort = null;
+        String serverUris = "localhost:8181";
+        camelContext = super.createCamelContext();
 
-	private void verifyRoute(RouteDefinition routeDefinition, String loadPort,
-			String serverUris) {
-		List<FromDefinition> fromDefinitions = routeDefinition.getInputs();
-		assertThat(fromDefinitions.size(), is(1));
-		String uri = fromDefinitions.get(0).getUri();
-		LOGGER.debug("uri = " + uri);
+        HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
 
-		String expectedUri = "jetty:http://0.0.0.0:" + loadPort
-				+ "?matchOnUriPrefix=true";
+        httpLb.setLoadPort(loadPort);
+        httpLb.setServerUris(serverUris);
 
-		assertThat(uri, equalTo(expectedUri));
-		List<ProcessorDefinition<?>> processorDefinitions = routeDefinition
-				.getOutputs();
+        // Simulates what container would do once all setters have been invoked
+        httpLb.init();
 
-		// expect 1 output: one To:
-		assertThat(processorDefinitions.size(), is(1));
+        assertThat(camelContext.getRouteDefinitions().size(), is(0));
+    }
 
-		ProcessorDefinition<?> pd = processorDefinitions.get(0);
-		LOGGER.debug(pd.toString());
-		assertTrue(pd instanceof LoadBalanceDefinition);
-		LoadBalanceDefinition shd = (LoadBalanceDefinition) pd;
-		assertThat(shd.getId(), equalTo("loadbalance1"));
-	}
+    @Test
+    /**
+     * Tests route creation with multiple server URIs
+     * 
+     * @throws Exception
+     */
+    public void testRouteCreationWithMultipleServerURIs() throws Exception {
+        String loadPort = "8080";
+        String serverUris = "localhost:8181,127.0.0.1:8181";
+        camelContext = super.createCamelContext();
+
+        HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+
+        httpLb.setLoadPort(loadPort);
+        httpLb.setServerUris(serverUris);
+
+        // Simulates what container would do once all setters have been invoked
+        httpLb.init();
+
+        assertThat(camelContext.getRouteDefinitions().size(), is(1));
+        camelContext.removeRouteDefinition(camelContext.getRouteDefinitions().get(0));
+    }
+
+    private RouteDefinition createRoute(String loadPort, String serverUris) throws Exception {
+        camelContext = super.createCamelContext();
+
+        HttpLoadBalancer httpLb = new HttpLoadBalancer(camelContext);
+
+        httpLb.setLoadPort(loadPort);
+        httpLb.setServerUris(serverUris);
+
+        // Simulates what container would do once all setters have been invoked
+        httpLb.init();
+
+        // Initial Camel route should now be created
+        List<RouteDefinition> routeDefinitions = httpLb.getRouteDefinitions();
+
+        assertThat(routeDefinitions.size(), is(1));
+        LOGGER.debug("routeDefinition = " + routeDefinitions.get(0).toString());
+
+        return routeDefinitions.get(0);
+    }
+
+    private void verifyRoute(RouteDefinition routeDefinition, String loadPort, String serverUris) {
+        List<FromDefinition> fromDefinitions = routeDefinition.getInputs();
+        assertThat(fromDefinitions.size(), is(1));
+        String uri = fromDefinitions.get(0).getUri();
+        LOGGER.debug("uri = " + uri);
+
+        String expectedUri = "jetty:http://0.0.0.0:" + loadPort + "?matchOnUriPrefix=true";
+
+        assertThat(uri, equalTo(expectedUri));
+        List<ProcessorDefinition<?>> processorDefinitions = routeDefinition.getOutputs();
+
+        // expect 1 output: one To:
+        assertThat(processorDefinitions.size(), is(1));
+
+        ProcessorDefinition<?> pd = processorDefinitions.get(0);
+        LOGGER.debug(pd.toString());
+        assertTrue(pd instanceof LoadBalanceDefinition);
+        LoadBalanceDefinition shd = (LoadBalanceDefinition) pd;
+        assertThat(shd.getId(), startsWith("loadbalance"));
+    }
 
 }
