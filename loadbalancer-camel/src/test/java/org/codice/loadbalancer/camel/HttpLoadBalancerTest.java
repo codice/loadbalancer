@@ -201,7 +201,8 @@ public class HttpLoadBalancerTest extends CamelTestSupport {
         String uri = fromDefinitions.get(0).getUri();
         LOGGER.debug("uri = " + uri);
 
-        String expectedUri = "jetty:http://0.0.0.0:" + loadPort + "?matchOnUriPrefix=true";
+        String expectedUri = "jetty:http://0.0.0.0:" + loadPort
+                + "?matchOnUriPrefix=true&continuationTimeout=0";
 
         assertThat(uri, equalTo(expectedUri));
         List<ProcessorDefinition<?>> processorDefinitions = routeDefinition.getOutputs();
