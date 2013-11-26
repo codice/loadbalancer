@@ -17,7 +17,7 @@
 
   <groupId>org.codice.loadbalancer</groupId>
   <artifactId>loadbalancer-pom</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Codice Loadbalancer</name>
 
@@ -115,7 +115,7 @@
     <url>https://github.com/codice/loadbalancer.git</url>
     <connection>scm:git:git://github.com/codice/loadbalancer.git</connection>
     <developerConnection>scm:git:git://github.com/codice/loadbalancer.git</developerConnection>
-    <tag>loadbalancer-pom-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
